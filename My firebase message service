@@ -1,0 +1,53 @@
+package com.makeeasy.pushnotification;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+
+import org.jspecify.annotations.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import android.Mainfest;
+import com.google.firebase.messaging. FirebaseMessagingService;
+import com.google.firebase.messaging.messaging.RemoteMessage;
+
+
+public class myFirebaseMessageService extends FirebaseMessagingService{
+
+    @Override
+    public void onNewToken(@NonNull  String token){
+        Log.d(tag: "FCM",msg:"Token: +" +token);
+    }
+    @Override
+    public void onMessageRecived(@NonNull RemoteMessage remoteMessage){
+        if(remoteMessage.getNotification() != null){
+            showNotification(remoteMessage.getNotification().getTitle(),remoteMessage. getNotification().getBody());
+        }
+    }
+private void requestNotificationPermission(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (ContextCompat.checkSelfPermission(context: this,Mainfest.permission.POST_NOTIFICATION) != packageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(( Activity) getApplicationContext(),new String[]{Mainfest.permission.POST_NOTIFICATION}requestCode:101);
+            }
+        }
+}
+    private void showNotification(String title,String message) {
+        if (Build,Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+
+            if (ContextCompat.checkSelfPermission(context: this,Mainfest.permission.POST_NOTIFICATION) != packageManager.PERMISSION_GRANTED){
+           requestNotificationPermission();
+            }
+        }
+        NotificationCompat.Builder builder = newNotificationCompat.Builder(context: this,channelld:"FCM_CHANNEL")
+        .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setAutoCancel(true);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE );
+        manager.notify(id: 0,builder.build());
+    }
+
+}
