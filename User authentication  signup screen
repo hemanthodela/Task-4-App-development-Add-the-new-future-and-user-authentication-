@@ -1,0 +1,81 @@
+package com.makeeasy.loginjcauth;
+
+import ...
+import android.text.Layout;
+import android.widget.GridLayout;
+import android.widget.Toast;
+
+import androidx.compose.runtime.Composable;
+import androidx.compose.runtime.CompositionLocalContext;
+import androidx.navigation.NavHostController;
+
+import org.intellij.lang.annotations.JdkConstants;
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Modifier;
+
+@Composable
+fun SignupScreen(navController:NavHostController){
+    var email by remender{mutableStateOf("")}
+    var password by remender{mutableStateOf("")}
+
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp),
+            contentAlignment = Alignment.ALIGN_CENTER){
+        Column(horizontalAlignment = Alignment.CenterHorizontally){
+            Text("Sign Up",style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                    value = email,
+                    onValueChange = {email = it},
+                    lable = {Text("Email")},
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            OutlinedTextField(
+                    value = password,
+                    onValueChange = {password = it},
+                    lable = {Text("password")},
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            val context = LocalContext.current
+
+                    Button(onClick = {
+                        Firebase.auth.createUserWithEmailAndPassword(email,password)
+                                .addOnCompleteListener { task ->
+                            if (task.isSuccessful){
+              Toast.makeText(context,"Signup successful! please log in.", Toast.LENGTH_SHORT).show();
+              navController.navigate("login"){
+                  popUpTo("signup"){ inclusive = true}
+                }
+            } else {
+                Toast.makeText(context,
+                        task.exception?.message ?:"Signup failed", Toast.LENGTH_SHORT).show();
+
+            }
+
+                    }
+                    }, modifier = Modifier.fillMaxWidth()){
+                Text("signup")
+            }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextButton(onClick = {
+                        navController.navigate("login"){
+                        popUpTo("signup"){ inclusive = true}
+                }
+                }){
+                    Text("Already have an account? Login")
+                }
+            
+
+        }
+    }
+
+}
