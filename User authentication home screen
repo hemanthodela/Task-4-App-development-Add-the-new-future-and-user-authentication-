@@ -1,0 +1,29 @@
+package com.makeeasy.loginjcauth;
+
+import ...
+
+import android.text.Layout;
+import android.widget.GridLayout;
+
+import androidx.compose.runtime.Composable;
+import androidx.navigation.NavHostController;
+
+import java.lang.reflect.Modifier;
+
+@Composable
+fun Homescreen(navController:NavHostController) {
+    Box(modifier = Modifier.fillMaxSize().padding(16dp),
+            contentAlignment = Layout.Alignment.ALIGN_CENTER) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Sign Up", style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(onClick = {
+                  Firebase.auth.signOut()
+                    navController.navigate("login"){
+                    popUpTo("home"){ inclusive = true}
+            }
+            }){ Text("Logout")}
+        }
+    }
+}
